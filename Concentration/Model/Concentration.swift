@@ -10,45 +10,56 @@ import Foundation
 
 class Concentration
 {
-    var cards = [Card]()
+    private(set) var cards = [Card]()
     
-    var indexOfOneAndOnlyFaceUpCard : Int?
+    //creating a computed property
+    private var indexOfOneAndOnlyFaceUpCard : Int? {
+        get {
+            var foundIndex : Int?
+            for index in cards.indices {
+                if cards[index].isFaceUp {
+                    if foundIndex == nil {
+                        foundIndex = index
+                    } else {
+                    return nil
+                    }
+                }
+            } 
+            return foundIndex
+        }
+        set{
+            for index in cards.indices {
+                cards[index].isFaceUp = (index == newValue)
+            }
+        }
+    }
     
-    func chooseCard(at Index: Int) {
-        if !cards[Index].isMatched {
-            if let matchIndex = indexOfOneAndOnlyFaceUpCard , matchIndex != Index {
-                //chech if cards match
-                if cards[matchIndex].identifier == cards[Index].identifier{
+    func chooseCard(at index: Int) {
+        //asserts are added to crash program in development phases and should be ignored while uploading to app store
+        assert(cards.indices.contains(index),"Concentration.chooseCard(at: \(index)):chosen index not in cards")
+        if !cards[index].isMatched {
+            if let matchIndex = indexOfOneAndOnlyFaceUpCard , matchIndex != index {
+                //check if cards match
+                if cards[matchIndex].identifier == cards[index].identifier{
                     cards[matchIndex].isMatched = true
-                    cards[Index].isMatched = true
+                    cards[index].isMatched = true
                 }
-                cards[Index].isFaceUp = true
-                indexOfOneAndOnlyFaceUpCard = nil
-            }else {
-                //either no cards or 2 cards are face up
-                for flipDownIndex in cards.indices {
-                    cards[flipDownIndex].isFaceUp = false
-                }
-                cards[Index].isFaceUp = true
-                indexOfOneAndOnlyFaceUpCard = Index
+                cards[index].isFaceUp = true
+            } else {
+                indexOfOneAndOnlyFaceUpCard = index
             }
         }
     }
     
     
     init(numberOfPairsOfCards : Int) {
-        for identifier in 0..<numberOfPairsOfCards{
-            let card = Card(identifier: identifier)
-            
-            //short form of below multiline comment
+        assert(numberOfPairsOfCards > 0 , "Concentration.init(at: \(numberOfPairsOfCards)):you must have atleast one number of pair of cards")
+        for _ in 0..<numberOfPairsOfCards{
+            let card = Card()
             cards += [card , card]
-            /*
-            cards.append(card)
-            cards.append(card)
-            */
-            
             
             // TODO: Shuffle the cards
+            
             
         }
     }
