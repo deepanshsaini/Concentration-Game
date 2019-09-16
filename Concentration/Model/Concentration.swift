@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Concentration
+struct Concentration
 {
     private(set) var cards = [Card]()
     
@@ -34,7 +34,7 @@ class Concentration
         }
     }
     
-    func chooseCard(at index: Int) {
+    mutating func chooseCard(at index: Int) {
         //asserts are added to crash program in development phases and should be ignored while uploading to app store
         assert(cards.indices.contains(index),"Concentration.chooseCard(at: \(index)):chosen index not in cards")
         if !cards[index].isMatched {
